@@ -31,7 +31,7 @@ server.register({
 ##### Options
 
 * `connectionLabel`
-* `socketio` - an object which passed through to socket.io
+* `socketio` - an object which is passed through to socket.io
 * `auth` - authentication configuration. Value can be:
   * a string with the name of an authentication strategy registered with `server.auth.strategy()`.
   * an object with:
