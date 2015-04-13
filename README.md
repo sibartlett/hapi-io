@@ -5,10 +5,15 @@
 
 Awesome socket.io plugin for [hapi](http://hapijs.com/) (inspired by [express.oi](https://github.com/sibartlett/express.oi) and [express.io](https://github.com/techpines/express.io)).
 
-* Adds socket.io to your hapi server
+##### Table of Contents
+
+* [Installation and Configuration](#installation-and-configuration)
+* [Authorization](#authorization)
+* [Raw access to socket.io](#raw-access-to-socketio)
 * [Forward socket.io events to hapi routes](#forward-events-to-hapi-routes)
 
-### Installation
+
+### Installation and Configuration
 
 ```sh
 npm install hapi-io --save
@@ -18,12 +23,29 @@ npm install hapi-io --save
 server.register({
   register: require('hapi-io'),
   options: {
-    connectionLabel: 'web' // Optional
+    ...
   }
 });
 ```
 
-#### Raw access to socket.io
+##### Options
+
+* `connectionLabel`
+* `socketio` - an object which passed through to socket.io
+* `auth` - authentication configuration. Value can be:
+  * a string with the name of an authentication strategy registered with `server.auth.strategy()`.
+  * an object with:
+    * `strategies` - a string array of strategy names in order they should be attempted. If only one strategy is used, `strategy` can be used instead with the single string value.
+
+
+### Authorization
+
+hapi-io can use a hapi auth strategy to authorize a socket.io connection. The socket.io client will not be able to connect if it fails the authentication check.
+
+See [options](##options) for how to configure.
+
+
+### Raw access to socket.io
 
 You can get raw access to the [socket.io server](http://socket.io/docs/server-api/) as follows:
 
@@ -35,7 +57,8 @@ exports.register = function(server, options, next) {
 };
 ```
 
-#### Forward events to hapi routes
+
+### Forward events to hapi routes
 
 _Perfect for exposing HTTP API endpoints over websockets!_
 
