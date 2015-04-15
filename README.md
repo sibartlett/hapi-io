@@ -71,7 +71,8 @@ socket.io events can be mapped to hapi routes; reusing the same authentication, 
 ```js
 exports.register = function(server, options, next) {
 
-  server.route({
+  server.route([
+  {
     method: 'GET',
     path: '/users/{id}',
     config: {
@@ -84,8 +85,35 @@ exports.register = function(server, options, next) {
         reply(err, user);
       });
     }
-  });
-
+  },
+  {
+    method: 'POST',
+    path: '/users',
+    config: {
+      plugins: {
+        'hapi-io': {
+            event: 'create-user',
+            mapping: {
+                headers: ['accept'],
+                query: ['returnType']
+            }
+        }
+      }
+    },
+    handler: function(request, reply) {
+      db.users.create(request.payload, function(err, user) {
+        if (request.headers.accept === 'application/hal+json') {
+            addMeta(user);
+        }
+        if (request.query.returnType !== 'full') {
+            user = _.omit(user, fullOnlyKeys);
+        }
+        var res = reply(err, user);
+        if (!err) res.code(201);
+      });
+    }
+  }
+  ]);
 };
 ```
 
@@ -93,8 +121,19 @@ exports.register = function(server, options, next) {
 
 ```js
 var socket = io();
+
 socket.emit('get-user', { id: 'sibartlett'}, function(res) {
   // res is the result from the hapi route
+});
+
+socket.emit('create-user', {
+  id: 'blsmith',
+  firstName: 'Bill',
+  lastName: 'Smith',
+  location: 'remote',
+  favoriteColor: 'green'
+}, function (res) {
+  // do something with new user
 });
 ```
 
@@ -111,6 +150,10 @@ The fake HTTP request is constructed as follows:
 2. Each field in the event payload is mapped to one of the following hapi param types: path, query, or payload. The mapping is determined on a per field basis:
 
   1. If the field is a parameter in the route's path, it's mapped as a path parameter.
-  2. If the field exists in the route's validate object, the value is mapped to the corresponding param type.
-  3. If the route is a 'GET' method, the field is mapped as a query param.
-  4. Otherwise it's mapped as a payload field.
+  2. If the hapi-io config is an object and has a `mapping` property, then the field is checked against the mapping. Allowed mappings are headers, query, and payload.
+
+  If the above two options do not match, then the following are tried in order:
+
+  1. If the field exists in the route's validate object, the value is mapped to the corresponding param type.
+  2. If the route is a 'GET' method, the field is mapped as a query param.
+  3. Otherwise it's mapped as a payload field.
