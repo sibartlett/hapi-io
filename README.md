@@ -106,7 +106,7 @@ exports.register = function(server, options, next) {
             addMeta(user);
         }
         if (request.query.returnType !== 'full') {
-            user = _.omit(user, fullOnlyKeys);
+            user = _.omit(user, 'favoriteColor');
         }
         var res = reply(err, user);
         if (!err) res.code(201);
@@ -128,10 +128,12 @@ socket.emit('get-user', { id: 'sibartlett'}, function(res) {
 
 socket.emit('create-user', {
   id: 'blsmith',
+  email: 'blsmith@smithswidgets.com',
   firstName: 'Bill',
   lastName: 'Smith',
   location: 'remote',
-  favoriteColor: 'green'
+  favoriteColor: 'green',
+  returnType: 'full'
 }, function (res) {
   // do something with new user
 });
