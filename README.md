@@ -71,21 +71,57 @@ socket.io events can be mapped to hapi routes; reusing the same authentication, 
 ```js
 exports.register = function(server, options, next) {
 
-  server.route({
-    method: 'GET',
-    path: '/users/{id}',
-    config: {
-      plugins: {
-        'hapi-io': 'get-user'
+  server.route([
+
+    {
+      method: 'GET',
+      path: '/users/{id}',
+      config: {
+        plugins: {
+          'hapi-io': 'get-user'
+        }
+      },
+      handler: function(request, reply) {
+        db.users.get(request.params.id, function(err, user) {
+          reply(err, user);
+        });
       }
     },
-    handler: function(request, reply) {
-      db.users.get(request.params.id, function(err, user) {
-        reply(err, user);
-      });
-    }
-  });
 
+    {
+      method: 'POST',
+      path: '/users',
+      config: {
+        plugins: {
+          'hapi-io': {
+            event: 'create-user',
+            mapping: {
+              headers: ['accept'],
+              query: ['returnType']
+            }
+          }
+        }
+      },
+      handler: function(request, reply) {
+        db.users.create(request.payload, function(err, user) {
+          if (err) {
+            return reply(err).code(201);
+          }
+
+          if (request.headers.accept === 'application/hal+json') {
+            addMeta(user);
+          }
+
+          if (request.query.returnType !== 'full') {
+            user = _.omit(user, 'favoriteColor');
+          }
+
+          reply(err, user);
+        });
+      }
+    }
+
+  ]);
 };
 ```
 
@@ -93,8 +129,19 @@ exports.register = function(server, options, next) {
 
 ```js
 var socket = io();
+
 socket.emit('get-user', { id: 'sibartlett'}, function(res) {
   // res is the result from the hapi route
+});
+
+socket.emit('create-user', {
+  name: 'Bill Smith',
+  email: 'blsmith@smithswidgets.com',
+  location: 'remote',
+  favoriteColor: 'green',
+  returnType: 'full'
+}, function (res) {
+  // do something with new user
 });
 ```
 
@@ -108,9 +155,14 @@ The fake HTTP request is constructed as follows:
 
   This allows you to use the route's auth stategy - to authenticate the socket.io event.
 
-2. Each field in the event payload is mapped to one of the following hapi param types: path, query, or payload. The mapping is determined on a per field basis:
+2. Each field in the event payload is mapped to one of the following hapi param types: headers, path, query or payload. The mapping is determined on a per field basis:
 
   1. If the field is a parameter in the route's path, it's mapped as a path parameter.
-  2. If the field exists in the route's validate object, the value is mapped to the corresponding param type.
-  3. If the route is a 'GET' method, the field is mapped as a query param.
-  4. Otherwise it's mapped as a payload field.
+
+  2. If the hapi-io config is an object and has a `mapping` property, then the field is checked against the mapping. Allowed mappings are headers, query, and payload.
+
+  3. If the field exists in the route's validate object, the value is mapped to the corresponding param type.
+
+  4. If the route is a 'GET' method, the field is mapped as a query param.
+
+  5. Otherwise it's mapped as a payload field.
