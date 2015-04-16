@@ -166,3 +166,37 @@ The fake HTTP request is constructed as follows:
   4. If the route is a 'GET' method, the field is mapped as a query param.
 
   5. Otherwise it's mapped as a payload field.
+
+##### Post event hook
+
+You can do further processing on a socket.io event, after it has been processed by hapi.
+
+You can use the `post` option to specify a function, with two parameters: `ctx` and `next`. `ctx` has the following properties:
+
+* `io` - the socket.io Server object
+* `socket` - the socket.io Socket object
+* `event` - the socket.io event
+* `data` - the event's data object
+* `req` - the request object that was injected into hapi
+* `res` - the result object that was returned by hapi
+* `result` - the res.result
+* `trigger` - a method that allows you to trigger another socket.io event
+
+```js
+server.route({
+  method: 'POST',
+  path: '/rooms/{roomId}/join',
+  config: {
+    plugins: {
+      'hapi-io': {
+        event: 'join-room',
+        post: function(ctx, next) {
+          ctx.socket.join(ctx.data.roomId);
+          next();
+        }
+      }
+    }
+  },
+  ...
+});
+```
