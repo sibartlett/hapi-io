@@ -1,7 +1,9 @@
 # hapi-io
 
 [![npm](https://img.shields.io/npm/v/hapi-io.svg)](https://www.npmjs.com/package/hapi-io)
+[![Build Status](https://travis-ci.org/sibartlett/hapi-io.svg?branch=master)](https://travis-ci.org/sibartlett/hapi-io)
 [![Dependency Status](https://david-dm.org/sibartlett/hapi-io.svg)](https://david-dm.org/sibartlett/hapi-io)
+[![devDependency Status](https://david-dm.org/sibartlett/hapi-io/dev-status.svg)](https://david-dm.org/sibartlett/hapi-io#info=devDependencies)
 
 Awesome socket.io plugin for [hapi](http://hapijs.com/) (inspired by [express.oi](https://github.com/sibartlett/express.oi) and [express.io](https://github.com/techpines/express.io)).
 
