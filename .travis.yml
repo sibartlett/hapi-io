@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- node
+deploy:
+  provider: npm
+  email: simon@sibartlett.com
+  api_key:
+    secure: m/lAYnseUn89iDrm2CJv3XlVbMzUjBzOmzs0AH0X3IyqKBz/y4CLq94hq1gRNZ2auhIUXIx1QOwkW7nqhpBdmo/eagjCe/V3FAdlR1UaLyCAkcw713Gt7cLmUE9p0Frq7Xc54tZlIoqT87toEHwIdcwFG/SAMOlFMe7a5FnfFNQ9hnJY2DUAeCGtlE8LWevZdfsjtUXSQshHDwCG4666rDUPeudOz4rBG8b+3bizRIJz2MGTShwdkWSISySrriDXYWbE7Lk0xNIePQBoELdsgcPJxSrg+V4OGj53CZ16WCghbZ/GXv4FkZQ09ku0I93Ju13b6iDpyhej9Kgq1j+QD6y78S+IK6DirslvhxOxkE3uaYKQNJBg8SuSDMuMyP+nf72VZh2zFSnKpJNAh7vbMeFc+xeX0QaF7xRIZFMhUsKVd5LJNm2w2xiBapHMkax5+TENIOwV4b9Cy6G8wAGZlPgjT81k9Me94QIiPHIBqCVZsYSd0Ebao8YANKdEbdjCFy2n7vJDIi9hpv9qvm9oc2+YwISB9M5SlWGBh1e0q1fo0v3DaQ8sSJKJJJ+5Te2ZES6WUJMaDkw8eKwRj24+NhXVrI55chOzHYfcbZcxfRRThKBc3nBI6yzpbyaCzJl1CqA/tYfil8wTGsvazqnkN/aY7RxEEyCcYRaVYHm1RaQ=
+  on:
+    tags: true
+    repo: sibartlett/hapi-io
