@@ -169,6 +169,8 @@ The fake HTTP request is constructed as follows:
 
   5. Otherwise it's mapped as a payload field.
 
+3. Maps "Authorization" attribute from query or data object if possible and not already mapped.
+
 ##### Post event hook
 
 You can do further processing on a socket.io event, after it has been processed by hapi.
