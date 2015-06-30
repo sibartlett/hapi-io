@@ -2,7 +2,7 @@
   "name": "hapi-io",
   "license": "MIT",
   "author": "Simon Bartlett <simon@sibartlett.com>",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Awesome socket.io plugin for hapi",
   "homepage": "https://github.com/sibartlett/hapi-io",
   "repository": "git://github.com/sibartlett/hapi-io",
@@ -11,7 +11,7 @@
     "test": "lab --verbose --lint --coverage"
   },
   "dependencies": {
-    "async": "^1.2.1",
+    "async": "^1.3.0",
     "lodash": "^3.9.3",
     "socket.io": "^1.3.5"
   },
