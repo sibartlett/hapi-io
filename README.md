@@ -10,7 +10,6 @@ Awesome socket.io plugin for [hapi](http://hapijs.com/) (inspired by [express.oi
 ##### Table of Contents
 
 * [Installation and Configuration](#installation-and-configuration)
-* [Authorization](#authorization)
 * [Raw access to socket.io](#raw-access-to-socketio)
 * [Forward socket.io events to hapi routes](#forward-events-to-hapi-routes)
 
@@ -32,19 +31,12 @@ server.register({
 
 ##### Options
 
-* `connectionLabel`
-* `socketio` - an object which is passed through to socket.io
-* `auth` - authentication configuration. Value can be:
+* `connectionLabel` (optional)
+* `socketio` (optional) - an object which is passed through to socket.io
+* `auth` (optional) - authorization configuration. Socket.io connections will be refused if they fail authorization. If this option is omitted: all socket.io connections will be accepted, but route level authorization will still be enforced. Value can be:
   * a string with the name of an authentication strategy registered with `server.auth.strategy()`.
   * an object with:
     * `strategies` - a string array of strategy names in order they should be attempted. If only one strategy is used, `strategy` can be used instead with the single string value.
-
-
-### Authorization
-
-hapi-io can use a hapi auth strategy to authorize a socket.io connection. The socket.io client will not be able to connect if it fails the authentication check.
-
-See [options](##options) for how to configure.
 
 
 ### Raw access to socket.io
