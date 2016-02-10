@@ -37,7 +37,7 @@ server.register({
   * a string with the name of an authentication strategy registered with `server.auth.strategy()`.
   * an object with:
     * `strategies` - a string array of strategy names in order they should be attempted. If only one strategy is used, `strategy` can be used instead with the single string value.
-
+* `authModeTry` - a boolean which specifies whether a failed authentication should be handled gracefully or not. Default value is `false`, so websocket connections that can not be authenticated are rejected. If you want to allow some unauthenticated websocket connections in your app, then set this to `true` and add `auth: { mode: 'try' }` to the hapi routes as usual.
 
 ### Raw access to socket.io
 
