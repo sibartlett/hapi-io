@@ -163,6 +163,35 @@ The fake HTTP request is constructed as follows:
 
 3. Maps "Authorization" attribute from query or data object if possible and not already mapped.
 
+##### Access socket during hapi request
+
+You can access the socket.io socket within the hapi route.
+
+```js
+exports.register = function(server, options, next) {
+
+  server.route({
+    method: 'GET',
+    path: '/users/{id}',
+    config: {
+      plugins: {
+        'hapi-io': 'get-user'
+      }
+    },
+    handler: function(request, reply) {
+      var io = request.plugins['hapi-io'];
+
+      reply({ success: true });
+
+      if (io) {
+        var socket = io.socket;
+        // Do something with socket
+      }
+    }
+  });
+};
+```
+
 ##### Post event hook
 
 You can do further processing on a socket.io event, after it has been processed by hapi.

@@ -27,6 +27,30 @@ describe('request', function() {
       done();
     });
 
+    it('maps socket param to request.plugins["hapi-io"]', function(done) {
+      var req = request({
+        route: {
+          method: 'get',
+          path: '/'
+        },
+        socket: 'MY_SOCKET'
+      });
+
+      expect(req).to.deep.equal({
+        method: 'get',
+        url: '/',
+        headers: {},
+        payload: JSON.stringify({}),
+        plugins: {
+          'hapi-io': {
+            socket: 'MY_SOCKET'
+          }
+        }
+      });
+
+      done();
+    });
+
     it('maps data param to query object when GET', function(done) {
       var req = request({
         route: {
@@ -286,13 +310,15 @@ describe('request', function() {
     });
 
     it('maps Authorization header from query', function(done) {
+      var socket = {
+        request: {
+          _query: { Authorization: 'MyToken'},
+          headers: {}
+        }
+      };
+
       var req = request({
-        socket: {
-          request: {
-            _query: { Authorization: 'MyToken'},
-            headers: {}
-          }
-        },
+        socket: socket,
         route: {
           method: 'get',
           path: '/'
@@ -304,7 +330,12 @@ describe('request', function() {
         method: 'get',
         url: '/?Authorization=MyToken',
         headers: { Authorization: 'MyToken'},
-        payload: JSON.stringify({})
+        payload: JSON.stringify({}),
+        plugins: {
+          'hapi-io': {
+            socket: socket
+          }
+        }
       });
 
       done();
@@ -349,12 +380,14 @@ describe('request', function() {
     });
 
     it('does not map Authorization header when it already exists', function(done) {
+      var socket = {
+        request: {
+          headers: { Authorization: 'MyToken'}
+        }
+      };
+
       var req = request({
-        socket: {
-          request: {
-            headers: { Authorization: 'MyToken'}
-          }
-        },
+        socket: socket,
         route: {
           method: 'get',
           path: '/'
@@ -365,7 +398,12 @@ describe('request', function() {
         method: 'get',
         url: '/',
         headers: { Authorization: 'MyToken'},
-        payload: JSON.stringify({})
+        payload: JSON.stringify({}),
+        plugins: {
+          'hapi-io': {
+            socket: socket
+          }
+        }
       });
 
       done();
