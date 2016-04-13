@@ -2,7 +2,7 @@
   "name": "hapi-io",
   "license": "MIT",
   "author": "Simon Bartlett <simon@sibartlett.com>",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Awesome socket.io plugin for hapi",
   "homepage": "https://github.com/sibartlett/hapi-io",
   "repository": "git://github.com/sibartlett/hapi-io",
