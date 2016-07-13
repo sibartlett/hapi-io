@@ -11,7 +11,7 @@
     "test": "lab --verbose --lint --coverage"
   },
   "dependencies": {
-    "async": "^1.5.2",
+    "async": "^2.0.0",
     "lodash": "^4.10.0",
     "socket.io": "^1.4.5"
   },
