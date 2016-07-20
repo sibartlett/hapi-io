@@ -11,15 +11,15 @@
     "test": "lab --verbose --lint --coverage"
   },
   "dependencies": {
-    "async": "^1.5.2",
-    "lodash": "^4.10.0",
+    "async": "^2.0.0",
+    "lodash": "^4.13.1",
     "socket.io": "^1.4.5"
   },
   "peerDependencies": {
     "hapi": ">=11.1.0"
   },
   "devDependencies": {
-    "code": "^2.2.0",
-    "lab": "^10.3.1"
+    "code": "^3.0.1",
+    "lab": "^10.9.0"
   }
 }
