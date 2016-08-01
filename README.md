@@ -165,7 +165,7 @@ The fake HTTP request is constructed as follows:
 
 ##### Access socket during hapi request
 
-You can access the socket.io socket within the hapi route.
+You can access both the socket.io server and socket within the hapi route.
 
 ```js
 exports.register = function(server, options, next) {
@@ -179,13 +179,13 @@ exports.register = function(server, options, next) {
       }
     },
     handler: function(request, reply) {
-      var io = request.plugins['hapi-io'];
+      var io = request.plugins['hapi-io'].io;
+      var socket = request.plugins['hapi-io'].socket;
 
       reply({ success: true });
 
-      if (io) {
-        var socket = io.socket;
-        // Do something with socket
+      if (socket) {
+        // socket is only defined during a hapi-io/socket.io request
       }
     }
   });
