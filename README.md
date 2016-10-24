@@ -29,9 +29,10 @@ server.register({
 });
 ```
 
-##### Options
+##### Plugin Initialization Options
 
 * `connectionLabel` (optional)
+* `namespaces` (optional) - an array of strings representing namespaces. Namespaces must always begin with a slash `'/'` (e.g. `'/mynamespace'`. _The default `'/'` namespace is always available irrespective if explicitly specified_, and will be the only namespace available to routes if this option is not set upon plugin initialization.
 * `socketio` (optional) - an object which is passed through to socket.io
 * `auth` (optional) - authorization configuration. Socket.io connections will be refused if they fail authorization. If this option is omitted: all socket.io connections will be accepted, but route level authorization will still be enforced. Value can be:
   * a string with the name of an authentication strategy registered with `server.auth.strategy()`.
@@ -66,7 +67,7 @@ socket.io events can be mapped to hapi routes; reusing the same authentication, 
 exports.register = function(server, options, next) {
 
   server.route([
-
+    // default namespace '/'
     {
       method: 'GET',
       path: '/users/{id}',
@@ -113,7 +114,24 @@ exports.register = function(server, options, next) {
           reply(err, user);
         });
       }
-    }
+    },
+    
+    // '/admin' namespace
+    {
+      method: 'GET',
+      path: '/users/{id}',
+      config: {
+        plugins: {
+          'hapi-io': 'get-admin-user',
+          'namespace' '/admin'
+        }
+      },
+      handler: function(request, reply) {
+        db.adminUsers.get(request.params.id, function(err, user) {
+          reply(err, user);
+        });
+      }
+     },
 
   ]);
 };
@@ -122,6 +140,7 @@ exports.register = function(server, options, next) {
 ###### Client
 
 ```js
+// default namespace
 var socket = io();
 
 socket.emit('get-user', { id: 'sibartlett'}, function(res) {
@@ -137,11 +156,20 @@ socket.emit('create-user', {
 }, function (res) {
   // do something with new user
 });
+
+// '/admin' namespace
+var socketA = io('/admin');
+
+socketA.emit('get-admin-user', { id: 'mmemon'}, function(res) {
+  // res is the result from the hapi route
+});
 ```
 
 ##### How it works
 
-Each time an event is received, a fake HTTP request is created and injected into the hapi server.
+At plugin initialization time, all `namespaces` are initialized on the server side. 
+
+Each time an event is received for one of the `namespaces` specified is received, a fake HTTP request is created and injected into the hapi server with a socket for that `namespace`.
 
 The fake HTTP request is constructed as follows:
 
@@ -176,6 +204,7 @@ exports.register = function(server, options, next) {
     config: {
       plugins: {
         'hapi-io': 'get-user'
+        // 'namespace': '/' // if no namespace explcitly specified, '/' is used
       }
     },
     handler: function(request, reply) {
@@ -186,6 +215,7 @@ exports.register = function(server, options, next) {
 
       if (socket) {
         // socket is only defined during a hapi-io/socket.io request
+        // socket is specific to the namespace 
       }
     }
   });
@@ -199,7 +229,7 @@ You can do further processing on a socket.io event, after it has been processed 
 You can use the `post` option to specify a function, with two parameters: `ctx` and `next`. `ctx` has the following properties:
 
 * `io` - the socket.io Server object
-* `socket` - the socket.io Socket object
+* `socket` - the socket.io Socket object for the given `namespace`
 * `event` - the socket.io event
 * `data` - the event's data object
 * `req` - the request object that was injected into hapi
