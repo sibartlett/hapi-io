@@ -32,6 +32,7 @@ server.register({
 ##### Options
 
 * `connectionLabel` (optional)
+* `namespaces` (optional) - an array of strings representing namespaces. Namespaces must always begin with a slash `'/'` (e.g. `'/mynamespace'`. _The default `'/'` namespace is always available irrespective if explicitly specified_, and will be the only namespace available to routes if this option is not set upon plugin initialization.
 * `socketio` (optional) - an object which is passed through to socket.io
 * `auth` (optional) - authorization configuration. Socket.io connections will be refused if they fail authorization. If this option is omitted: all socket.io connections will be accepted, but route level authorization will still be enforced. Value can be:
   * a string with the name of an authentication strategy registered with `server.auth.strategy()`.
@@ -113,7 +114,26 @@ exports.register = function(server, options, next) {
           reply(err, user);
         });
       }
-    }
+    },
+
+    // '/admin' namespace
+    {
+      method: 'GET',
+      path: '/users/{id}',
+      config: {
+        plugins: {
+          'hapi-io': {
+            event: 'create-user',
+            namespace '/admin'
+          }
+        }
+      },
+      handler: function(request, reply) {
+        db.adminUsers.get(request.params.id, function(err, user) {
+          reply(err, user);
+        });
+      }
+     },
 
   ]);
 };
@@ -136,6 +156,13 @@ socket.emit('create-user', {
   returnType: 'full'
 }, function (res) {
   // do something with new user
+});
+
+// '/admin' namespace
+var socketA = io('/admin');
+
+socketA.emit('get-admin-user', { id: 'mmemon'}, function(res) {
+  // res is the result from the hapi route
 });
 ```
 
