@@ -10,16 +10,20 @@
   "scripts": {
     "test": "lab --verbose --lint --coverage"
   },
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "dependencies": {
     "async": "^2.1.4",
-    "lodash": "^4.17.2",
-    "socket.io": "^1.6.0"
+    "socket.io": "^1.7.2"
   },
   "peerDependencies": {
-    "hapi": ">=11.1.0"
+    "hapi": ">=11.1.0",
+    "hoek": ">=3.0.0"
   },
   "devDependencies": {
     "code": "^4.0.0",
+    "hoek": "3.x.x",
     "lab": "^11.2.1"
   }
 }

@@ -107,7 +107,7 @@ exports.register = function(server, options, next) {
           }
 
           if (request.query.returnType !== 'full') {
-            user = _.omit(user, 'favoriteColor');
+            delete user.favoriteColor;
           }
 
           reply(err, user);
