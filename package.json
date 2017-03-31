@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "code": "^4.0.0",
-    "hoek": "3.x.x",
+    "hoek": "4.1.1",
     "lab": "^11.2.1"
   }
 }
