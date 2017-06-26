@@ -125,7 +125,7 @@ exports.register = function(server, options, next) {
         plugins: {
           'hapi-io': {
             event: 'create-user',
-            namespace '/admin'
+            namespace: '/admin'
           }
         }
       },
