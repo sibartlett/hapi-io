@@ -142,6 +142,12 @@ exports.register = function(server, options, next) {
 
 ###### Client
 
+Reference socket.io as per https://socket.io/docs/ in your HTML:
+
+```html
+<script src="/socket.io/socket.io.js"></script>
+```
+
 ```js
 var socket = io();
 
