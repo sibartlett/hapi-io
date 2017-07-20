@@ -142,35 +142,34 @@ exports.register = function(server, options, next) {
 
 ###### Client
 
-Reference socket.io as per https://socket.io/docs/ in your HTML:
-
-```html
-<script src="/socket.io/socket.io.js"></script>
-```
+Reference socket.io as per https://socket.io/docs/ 
 
 ```js
-var socket = io();
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
 
-socket.emit('get-user', { id: 'sibartlett'}, function(res) {
-  // res is the result from the hapi route
-});
+  socket.emit('get-user', { id: 'sibartlett'}, function(res) {
+    // res is the result from the hapi route
+  });
 
-socket.emit('create-user', {
-  name: 'Bill Smith',
-  email: 'blsmith@smithswidgets.com',
-  location: 'remote',
-  favoriteColor: 'green',
-  returnType: 'full'
-}, function (res) {
-  // do something with new user
-});
+  socket.emit('create-user', {
+    name: 'Bill Smith',
+    email: 'blsmith@smithswidgets.com',
+    location: 'remote',
+    favoriteColor: 'green',
+    returnType: 'full'
+  }, function (res) {
+    // do something with new user
+  });
 
-// '/admin' namespace
-var socketA = io('/admin');
+  // '/admin' namespace
+  var socketA = io('/admin');
 
-socketA.emit('get-admin-user', { id: 'mmemon'}, function(res) {
-  // res is the result from the hapi route
-});
+  socketA.emit('get-admin-user', { id: 'mmemon'}, function(res) {
+    // res is the result from the hapi route
+  });
+</script>
 ```
 
 ##### How it works
