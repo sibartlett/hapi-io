@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "async": "^2.5.0",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.1.1"
   },
   "peerDependencies": {
     "hapi": ">=11.1.0",
