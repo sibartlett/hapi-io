@@ -32,7 +32,6 @@ server.register({
 
 ##### Options
 
-* `connectionLabel` (optional)
 * `namespaces` (optional) - an array of strings representing namespaces. Namespaces must always begin with a slash `'/'` (e.g. `'/mynamespace'`. _The default `'/'` namespace is always available irrespective if explicitly specified_, and will be the only namespace available to routes if this option is not set upon plugin initialization.
 * `socketio` (optional) - an object which is passed through to socket.io
 * `auth` (optional) - authorization configuration. Socket.io connections will be refused if they fail authorization. If this option is omitted: all socket.io connections will be accepted, but route level authorization will still be enforced. Value can be:
@@ -46,10 +45,11 @@ server.register({
 You can get raw access to the [socket.io server](http://socket.io/docs/server-api/) as follows:
 
 ```js
-exports.register = function(server, options, next) {
-
-  var io = server.plugins['hapi-io'].io;
-
+exports.plugin = {
+  name: 'plugin',
+  register: async (server, options) => {
+    const { io } = server.plugins['hapi-io'];
+  }
 };
 ```
 
@@ -65,44 +65,42 @@ socket.io events can be mapped to hapi routes; reusing the same authentication, 
 ###### Server
 
 ```js
-exports.register = function(server, options, next) {
+exports.plugin = {
+  name: 'plugin',
+  register: async (server, options) => {
 
-  server.route([
+    server.route([
 
-    {
-      method: 'GET',
-      path: '/users/{id}',
-      config: {
-        plugins: {
-          'hapi-io': 'get-user'
+      {
+        method: 'GET',
+        path: '/users/{id}',
+        config: {
+          plugins: {
+            'hapi-io': 'get-user'
+          }
+        },
+        handler: async (request, h) => {
+          const user = db.users.get(request.params.id);
+          return user;
         }
       },
-      handler: function(request, reply) {
-        db.users.get(request.params.id, function(err, user) {
-          reply(err, user);
-        });
-      }
-    },
 
-    {
-      method: 'POST',
-      path: '/users',
-      config: {
-        plugins: {
-          'hapi-io': {
-            event: 'create-user',
-            mapping: {
-              headers: ['accept'],
-              query: ['returnType']
+      {
+        method: 'POST',
+        path: '/users',
+        config: {
+          plugins: {
+            'hapi-io': {
+              event: 'create-user',
+              mapping: {
+                headers: ['accept'],
+                query: ['returnType']
+              }
             }
           }
-        }
-      },
-      handler: function(request, reply) {
-        db.users.create(request.payload, function(err, user) {
-          if (err) {
-            return reply(err).code(201);
-          }
+        },
+        handler: async (request, h) => {
+          const user = db.users.create(request.payload);
 
           if (request.headers.accept === 'application/hal+json') {
             addMeta(user);
@@ -112,37 +110,37 @@ exports.register = function(server, options, next) {
             delete user.favoriteColor;
           }
 
-          reply(err, user);
-        });
-      }
-    },
-
-    // '/admin' namespace
-    {
-      method: 'GET',
-      path: '/users/{id}',
-      config: {
-        plugins: {
-          'hapi-io': {
-            event: 'create-user',
-            namespace: '/admin'
-          }
+          return user
         }
       },
-      handler: function(request, reply) {
-        db.adminUsers.get(request.params.id, function(err, user) {
-          reply(err, user);
-        });
-      }
-     },
 
-  ]);
+      // '/admin' namespace
+      {
+        method: 'GET',
+        path: '/users/{id}',
+        config: {
+          plugins: {
+            'hapi-io': {
+              event: 'create-user',
+              namespace: '/admin'
+            }
+          }
+        },
+        handler: async (request, h) => {
+          const user = await db.adminUsers.get(request.params.id);
+          return user;
+        }
+       },
+
+    ]);
+
+  }
 };
 ```
 
 ###### Client
 
-Reference socket.io as per https://socket.io/docs/ 
+Reference socket.io as per https://socket.io/docs/
 
 ```js
 <script src="/socket.io/socket.io.js"></script>
@@ -201,27 +199,30 @@ The fake HTTP request is constructed as follows:
 You can access both the socket.io server and socket within the hapi route.
 
 ```js
-exports.register = function(server, options, next) {
+exports.plugin = {
+  name: 'routes',
+  register: async (server, options) => {
 
-  server.route({
-    method: 'GET',
-    path: '/users/{id}',
-    config: {
-      plugins: {
-        'hapi-io': 'get-user'
+    server.route({
+      method: 'GET',
+      path: '/users/{id}',
+      config: {
+        plugins: {
+          'hapi-io': 'get-user'
+        }
+      },
+      handler: async (request, h) => {
+        const { io, socket } = request.plugins['hapi-io'];
+
+        if (socket) {
+          // socket is only defined during a hapi-io/socket.io request
+        }
+
+        return { success: true };
       }
-    },
-    handler: function(request, reply) {
-      var io = request.plugins['hapi-io'].io;
-      var socket = request.plugins['hapi-io'].socket;
+    });
 
-      reply({ success: true });
-
-      if (socket) {
-        // socket is only defined during a hapi-io/socket.io request
-      }
-    }
-  });
+  }
 };
 ```
 
