@@ -11,19 +11,19 @@
     "test": "lab --verbose --lint --coverage"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=8.0.0"
   },
   "dependencies": {
-    "async": "^2.5.0",
-    "socket.io": "^2.0.3"
+    "async": "^2.6.1",
+    "socket.io": "^2.1.1"
   },
   "peerDependencies": {
-    "hapi": ">=11.1.0",
-    "hoek": ">=3.0.0"
+    "hapi": ">=17.0.0",
+    "hoek": ">=5.0.0"
   },
   "devDependencies": {
-    "code": "^4.1.0",
-    "hoek": "^4.1.1",
-    "lab": "^14.1.0"
+    "code": "^5.2.0",
+    "hoek": "^5.0.3",
+    "lab": "^15.5.0"
   }
 }

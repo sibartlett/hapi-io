@@ -1,7 +1,8 @@
 language: node_js
 node_js:
-- node
-- "4.0.0"
+- "node"
+- "9"
+- "8"
 deploy:
   provider: npm
   email: simon@sibartlett.com
