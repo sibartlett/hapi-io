@@ -1,21 +1,20 @@
 'use strict';
 
-var Code = require('code');
-var Lab = require('lab');
-var lab = exports.lab = Lab.script();
+const Code = require('code');
+const Lab = require('lab');
+const lab = exports.lab = Lab.script();
 
-var expect = Code.expect;
-var describe = lab.describe;
-var it = lab.it;
+const { expect } = Code;
+const { describe, it } = lab;
 
 describe('request', function() {
 
-  var request = require('../lib/request');
+  const request = require('../lib/request');
 
   describe('request(socket, route, data)', function() {
 
-    it('handles empty request', function(done) {
-      var req = request({});
+    it('handles empty request', () => {
+      const req = request({});
 
       expect(req).to.equal({
         method: 'get',
@@ -23,12 +22,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps socket param to request.plugins["hapi-io"]', function(done) {
-      var req = request({
+    it('maps socket param to request.plugins["hapi-io"]', () => {
+      const req = request({
         route: {
           method: 'get',
           path: '/'
@@ -47,12 +44,10 @@ describe('request', function() {
           }
         }
       });
-
-      done();
     });
 
-    it('maps data param to query object when GET', function(done) {
-      var req = request({
+    it('maps data param to query object when GET', () => {
+      const req = request({
         route: {
           method: 'get',
           path: '/'
@@ -66,12 +61,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps data param to payload object when POST', function(done) {
-      var req = request({
+    it('maps data param to payload object when POST', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/'
@@ -85,12 +78,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({myparam: 'hello world'})
       });
-
-      done();
     });
 
-    it('maps data param to payload with validate mapping', function(done) {
-      var req = request({
+    it('maps data param to payload with validate mapping', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/',
@@ -111,12 +102,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({ myparam: 'hello world'})
       });
-
-      done();
     });
 
-    it('maps data param to query with validate mapping', function(done) {
-      var req = request({
+    it('maps data param to query with validate mapping', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/',
@@ -137,12 +126,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps data param to headers with validate mapping', function(done) {
-      var req = request({
+    it('maps data param to headers with validate mapping', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/',
@@ -163,12 +150,10 @@ describe('request', function() {
         headers: { myparam: 'hello world'},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps data param to query when validate mapping specifies both query and headers', function(done) {
-      var req = request({
+    it('maps data param to query when validate mapping specifies both query and headers', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/',
@@ -192,12 +177,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps data param to query when validate mapping specifies both query and payload', function(done) {
-      var req = request({
+    it('maps data param to query when validate mapping specifies both query and payload', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/',
@@ -221,12 +204,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps data param to payload with custom mapping', function(done) {
-      var req = request({
+    it('maps data param to payload with custom mapping', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/',
@@ -249,12 +230,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({ myparam: 'hello world'})
       });
-
-      done();
     });
 
-    it('maps data param to query with custom mapping', function(done) {
-      var req = request({
+    it('maps data param to query with custom mapping', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/',
@@ -277,12 +256,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps data param to headers with custom mapping', function(done) {
-      var req = request({
+    it('maps data param to headers with custom mapping', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/',
@@ -305,19 +282,17 @@ describe('request', function() {
         headers: { myparam: 'hello world'},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps Authorization header from query', function(done) {
-      var socket = {
+    it('maps Authorization header from query', () => {
+      const socket = {
         request: {
           _query: { Authorization: 'MyToken'},
           headers: {}
         }
       };
 
-      var req = request({
+      const req = request({
         socket: socket,
         route: {
           method: 'get',
@@ -337,12 +312,10 @@ describe('request', function() {
           }
         }
       });
-
-      done();
     });
 
-    it('maps Authorization header from data', function(done) {
-      var req = request({
+    it('maps Authorization header from data', () => {
+      const req = request({
         route: {
           method: 'get',
           path: '/'
@@ -356,12 +329,10 @@ describe('request', function() {
         headers: { Authorization: 'MyToken'},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps Authorization header case-insensitive', function(done) {
-      var req = request({
+    it('maps Authorization header case-insensitive', () => {
+      const req = request({
         route: {
           method: 'post',
           path: '/'
@@ -375,18 +346,16 @@ describe('request', function() {
         headers: { authorization: 'MyToken'},
         payload: JSON.stringify({ authorization: 'MyToken'})
       });
-
-      done();
     });
 
-    it('does not map Authorization header when it already exists', function(done) {
-      var socket = {
+    it('does not map Authorization header when it already exists', () => {
+      const socket = {
         request: {
           headers: { Authorization: 'MyToken'}
         }
       };
 
-      var req = request({
+      const req = request({
         socket: socket,
         route: {
           method: 'get',
@@ -405,12 +374,10 @@ describe('request', function() {
           }
         }
       });
-
-      done();
     });
 
-    it('maps data param to path param', function(done) {
-      var req = request({
+    it('maps data param to path param', () => {
+      const req = request({
         route: {
           method: 'get',
           path: '/blog-post/{blogId}'
@@ -426,12 +393,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('does not map missing data param to path param', function(done) {
-      var req = request({
+    it('does not map missing data param to path param', () => {
+      const req = request({
         route: {
           method: 'get',
           path: '/blog-post/{blogId}'
@@ -444,12 +409,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('maps data param to optional path param', function(done) {
-      var req = request({
+    it('maps data param to optional path param', () => {
+      const req = request({
         route: {
           method: 'get',
           path: '/blog-post/{blogId?}'
@@ -465,12 +428,10 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
-    it('does not map missing data param to optional path param', function(done) {
-      var req = request({
+    it('does not map missing data param to optional path param', () => {
+      const req = request({
         route: {
           method: 'get',
           path: '/blog-post/{blogId?}'
@@ -483,8 +444,6 @@ describe('request', function() {
         headers: {},
         payload: JSON.stringify({})
       });
-
-      done();
     });
 
   });
