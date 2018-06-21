@@ -7,34 +7,36 @@ const lab = exports.lab = Lab.script();
 const { expect } = Code;
 const { describe, it } = lab;
 
-describe('request', function() {
+describe('request', () => {
 
-  const namespaces = require('../lib/namespaces');
+    const namespaces = require('../lib/namespaces');
 
-  describe('namespaces(io, namespaces)', function() {
+    describe('namespaces(io, namespaces)',() => {
 
-    it('returns object containing namespaces', () => {
-      const io = { of: function(namespace) { return namespace; }};
-      const names = ['/hello', '/bye'];
-      const nsps = namespaces(io, names);
+        it('returns object containing namespaces', () => {
 
-      expect(nsps).to.equal({
-        '/': io.of('/'),
-        '/hello': io.of('/hello'),
-        '/bye': io.of('/bye')
-      });
+            const io = { of: (namespace) => namespace };
+            const names = ['/hello', '/bye'];
+            const nsps = namespaces(io, names);
+
+            expect(nsps).to.equal({
+                '/': io.of('/'),
+                '/hello': io.of('/hello'),
+                '/bye': io.of('/bye')
+            });
+        });
+
+        it('always returns default namespace', () => {
+
+            const io = { of: (namespace) => namespace };
+            const names = 'blah';
+            const nsps = namespaces(io, names);
+
+            expect(nsps).to.equal({
+                '/': io.of('/')
+            });
+        });
+
     });
-
-    it('always returns default namespace', () => {
-      const io = { of: function(namespace) { return namespace; }};
-      const names = 'blah';
-      const nsps = namespaces(io, names);
-
-      expect(nsps).to.equal({
-        '/': io.of('/')
-      });
-    });
-
-  });
 
 });
